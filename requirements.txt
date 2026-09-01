@@ -10,6 +10,7 @@ seaborn
 ipywidgets
 scikit-learn
 xgboost
+mlflow
 pydantic
 fastapi
 uvicorn[standard]

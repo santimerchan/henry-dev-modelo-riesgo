@@ -1,1 +1,5 @@
 venv/
+__pycache__/
+*.pyc
+mlops_pipeline/src/mlruns/
+mlops_pipeline/src/mlartifacts/

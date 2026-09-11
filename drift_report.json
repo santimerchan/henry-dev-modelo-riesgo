@@ -1,0 +1,152 @@
+{
+  "timestamp": "2026-09-10T19:34:01",
+  "n_historico": 10763,
+  "n_actual": 3229,
+  "batch_actual_simulado": true,
+  "umbrales": {
+    "PSI_UMBRAL": 0.25,
+    "KS_UMBRAL": 0.25,
+    "JS_UMBRAL": 0.3,
+    "CHI2_PVALUE_UMBRAL": 0.05
+  },
+  "variables_evaluadas": 14,
+  "variables_con_drift": [
+    "plazo_meses",
+    "salario_cliente",
+    "total_otros_prestamos",
+    "puntaje",
+    "promedio_ingresos_datacredito",
+    "tipo_laboral",
+    "tendencia_ingresos",
+    "tipo_credito"
+  ],
+  "drift_detectado_global": true,
+  "resultados": [
+    {
+      "variable": "capital_prestado",
+      "tipo": "numerica",
+      "psi": 0.0053,
+      "ks": 0.017,
+      "jensen_shannon": 0.031,
+      "chi2_pvalue": null,
+      "drift_detectado": false
+    },
+    {
+      "variable": "plazo_meses",
+      "tipo": "numerica",
+      "psi": 0.3768,
+      "ks": 0.1593,
+      "jensen_shannon": 0.2546,
+      "chi2_pvalue": null,
+      "drift_detectado": true
+    },
+    {
+      "variable": "edad_cliente",
+      "tipo": "numerica",
+      "psi": 0.0062,
+      "ks": 0.0217,
+      "jensen_shannon": 0.0334,
+      "chi2_pvalue": null,
+      "drift_detectado": false
+    },
+    {
+      "variable": "salario_cliente",
+      "tipo": "numerica",
+      "psi": 12.4723,
+      "ks": 0.9931,
+      "jensen_shannon": 0.8706,
+      "chi2_pvalue": null,
+      "drift_detectado": true
+    },
+    {
+      "variable": "total_otros_prestamos",
+      "tipo": "numerica",
+      "psi": 2.7906,
+      "ks": 0.4528,
+      "jensen_shannon": 0.6481,
+      "chi2_pvalue": null,
+      "drift_detectado": true
+    },
+    {
+      "variable": "cuota_pactada",
+      "tipo": "numerica",
+      "psi": 0.0044,
+      "ks": 0.0223,
+      "jensen_shannon": 0.0281,
+      "chi2_pvalue": null,
+      "drift_detectado": false
+    },
+    {
+      "variable": "puntaje",
+      "tipo": "numerica",
+      "psi": 14.49,
+      "ks": 0.9284,
+      "jensen_shannon": 0.8738,
+      "chi2_pvalue": null,
+      "drift_detectado": true
+    },
+    {
+      "variable": "puntaje_datacredito",
+      "tipo": "numerica",
+      "psi": 0.0056,
+      "ks": 0.018,
+      "jensen_shannon": 0.0318,
+      "chi2_pvalue": null,
+      "drift_detectado": false
+    },
+    {
+      "variable": "cant_creditosvigentes",
+      "tipo": "numerica",
+      "psi": 0.027,
+      "ks": 0.0665,
+      "jensen_shannon": 0.0696,
+      "chi2_pvalue": null,
+      "drift_detectado": false
+    },
+    {
+      "variable": "saldo_total",
+      "tipo": "numerica",
+      "psi": 0.187,
+      "ks": 0.1756,
+      "jensen_shannon": 0.1795,
+      "chi2_pvalue": null,
+      "drift_detectado": false
+    },
+    {
+      "variable": "promedio_ingresos_datacredito",
+      "tipo": "numerica",
+      "psi": 0.2846,
+      "ks": 0.1191,
+      "jensen_shannon": 0.2195,
+      "chi2_pvalue": null,
+      "drift_detectado": true
+    },
+    {
+      "variable": "tipo_laboral",
+      "tipo": "categorica",
+      "psi": null,
+      "ks": null,
+      "jensen_shannon": 0.2542,
+      "chi2_pvalue": 0.0,
+      "drift_detectado": true
+    },
+    {
+      "variable": "tendencia_ingresos",
+      "tipo": "categorica",
+      "psi": null,
+      "ks": null,
+      "jensen_shannon": 0.2485,
+      "chi2_pvalue": 0.0,
+      "drift_detectado": true
+    },
+    {
+      "variable": "tipo_credito",
+      "tipo": "categorica",
+      "psi": null,
+      "ks": null,
+      "jensen_shannon": 0.2349,
+      "chi2_pvalue": 0.0,
+      "drift_detectado": true
+    }
+  ]
+}

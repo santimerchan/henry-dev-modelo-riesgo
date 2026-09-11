@@ -7,7 +7,10 @@ jupyter
 notebook
 ipykernel
 seaborn
+matplotlib
 ipywidgets
+scipy
+streamlit>=1.49
 scikit-learn
 xgboost
 mlflow

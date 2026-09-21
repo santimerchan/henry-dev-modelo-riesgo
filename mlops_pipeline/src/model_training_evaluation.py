@@ -10,8 +10,15 @@ el script — por ejemplo desde el futuro model_deploy.py.
 
 from __future__ import annotations
 
+import os
+
+# MLflow 3.x exige base de datos por defecto; este proyecto usa tracking local en ./mlruns
+# (mismo patrón que HO1). Sin esta variable, `set_experiment` falla en clase.
+os.environ.setdefault("MLFLOW_ALLOW_FILE_STORE", "true")
+
 from pathlib import Path
 
+import joblib
 import matplotlib.pyplot as plt
 import mlflow
 import mlflow.sklearn
@@ -33,12 +40,14 @@ from sklearn.metrics import (
     roc_curve,
 )
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 from sklearn.utils.class_weight import compute_sample_weight
 from xgboost import XGBClassifier
 
 from ft_engineering import (
     RANDOM_STATE,
+    REPO_ROOT,
     TARGET_COLUMN,
     build_feature_pipeline,
     categoric_features,
@@ -55,6 +64,14 @@ from ft_engineering import (
 # ruta absoluta para que el resultado no dependa del directorio desde el que se ejecute.
 MLRUNS_DIR = Path(__file__).resolve().parent / "mlruns"
 EXPERIMENT_NAME = "modelo_riesgo_crediticio"
+
+# Artefacto que consume model_deploy.py. MLflow guarda cada candidato para poder comparar
+# experimentos, pero `mlruns/` está en .gitignore y no viaja en la imagen Docker: el modelo
+# ganador se serializa además como un archivo propio en la raíz del repositorio.
+# Se usa joblib (no pickle puro) porque los modelos de sklearn guardan internamente arreglos
+# grandes de NumPy y joblib los serializa mejor.
+MODEL_FILENAME = "modelo_riesgo.joblib"
+MODEL_PATH = REPO_ROOT / MODEL_FILENAME
 
 
 def build_model(model, X_train, y_train, sample_weight=None):
@@ -278,6 +295,32 @@ def select_best_model(summary_df: pd.DataFrame, metric: str = "roc_auc") -> str:
     return summary_df[metric].idxmax()
 
 
+def build_serving_pipeline(feature_pipeline: Pipeline, model) -> Pipeline:
+    """
+    Une el preprocesador ya ajustado y el modelo ganador en un solo objeto.
+
+    Ambos llegan entrenados, así que no se vuelve a llamar `fit()`: el resultado acepta
+    directamente un DataFrame con las columnas crudas y devuelve la predicción.
+    """
+    return Pipeline(steps=[("preprocessor", feature_pipeline), ("model", model)])
+
+
+def save_best_model(
+    feature_pipeline: Pipeline,
+    model,
+    model_path: Path | str = MODEL_PATH,
+) -> Path:
+    """
+    Serializa preprocesamiento + modelo como un único archivo .joblib.
+
+    Guardar los dos juntos evita el error clásico de servir el modelo con transformaciones
+    distintas a las del entrenamiento: quien cargue el archivo recibe el pipeline completo.
+    """
+    model_path = Path(model_path)
+    joblib.dump(build_serving_pipeline(feature_pipeline, model), model_path)
+    return model_path
+
+
 if __name__ == "__main__":
     print("=== Entrenamiento y evaluación ===")
 
@@ -329,6 +372,9 @@ if __name__ == "__main__":
 
         mlflow.set_tag("best_model", best_model_name)
         mlflow.log_metric("best_model_roc_auc", summary_df.loc[best_model_name, "roc_auc"])
+
+        saved_path = save_best_model(pipeline, trained_models[best_model_name])
+        print(f"Modelo serializado en: {saved_path}")
 
         print(f"\nMejor modelo según ROC-AUC: {best_model_name} (run_id={best_run_id})")
         print(f"Experimento MLflow: {EXPERIMENT_NAME} | tracking_uri: {MLRUNS_DIR.as_uri()}")

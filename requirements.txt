@@ -13,7 +13,9 @@ scipy
 streamlit>=1.49
 scikit-learn
 xgboost
-mlflow
+mlflow==2.16.2
 pydantic
 fastapi
 uvicorn[standard]
+joblib
+python-multipart
